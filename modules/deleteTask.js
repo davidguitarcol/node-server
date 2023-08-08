@@ -1,26 +1,27 @@
-const readlineSync = require("readline-sync");
+const { showTasks } = require("./showTasks");
 
 function deleteTask(tasks) {
-  if (tasks.length === 0) {
-    console.log("No hay tareas por eliminar.");
-    return;
-  }
+  return new Promise((resolve) => {
+    if (tasks.length === 0) {
+      console.log("No hay ninguna tarea para eliminar.");
+      resolve();
+      return;
+    }
 
-  const taskIndex = readlineSync.keyInSelect(
-    tasks.map((task) => {
-      const status = task.completed ? "[completed]" : "[incompleted]";
-      return `${status} ${task.description}`;
-    }),
-    "Seleccione la tarea a eliminar:"
-  );
+    //se  llama a la función showTasks para mostrar las tareas y obtener la tarea seleccionada
+    const taskIndex = showTasks(tasks, "Seleccione la tarea a eliminar:");
 
-  if (taskIndex === -1) {
-    console.log("Cancelado.");
-    return;
-  }
+    // Funcion para verificar si el usuario canceló la selección
+    if (taskIndex === -1) {
+      console.log("Cancelado.");
+      resolve();
+      return;
+    }
 
-  tasks.splice(taskIndex, 1);
-  console.log("Tarea eliminada .");
+    tasks.splice(taskIndex, 1); // Elimina la tarea seleccionada del arreglo de tareas
+    console.log("Tarea eliminada correctamente.");
+    resolve();
+  });
 }
 
 module.exports = {
